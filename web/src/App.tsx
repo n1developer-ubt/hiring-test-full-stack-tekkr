@@ -42,7 +42,6 @@ function App() {
       <QueryClientProvider client={queryClient}>
          <RouterProvider router={router} />
          <Toaster richColors position='top-right' />
-         <ReactQueryDevtools />
       </QueryClientProvider>
    )
 }
