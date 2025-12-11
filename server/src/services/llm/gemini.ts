@@ -3,8 +3,14 @@ import { LLMMessage, LLMProvider } from "../../types"
 import { mapModelName } from "./llm-factory"
 
 const apiKey = process.env.GEMINI_API_KEY || ""
-console.log(`[Gemini] API key loaded: ${apiKey.length} characters`)
-console.log(`[Gemini] API key prefix: ${apiKey.substring(0, 5)}...`)
+if (apiKey) {
+   console.log(`[Gemini] API key loaded: ${apiKey.length} characters`)
+   console.log(`[Gemini] API key prefix: ${apiKey.substring(0, 5)}...`)
+} else {
+   console.warn(
+      "[Gemini] No API key found in GEMINI_API_KEY environment variable"
+   )
+}
 
 const genAI = new GoogleGenerativeAI(apiKey)
 
@@ -30,6 +36,8 @@ Example format:
 \`\`\``
 
 export class GeminiProvider implements LLMProvider {
+   readonly name = "gemini"
+
    async generateResponse(
       messages: LLMMessage[],
       model: string

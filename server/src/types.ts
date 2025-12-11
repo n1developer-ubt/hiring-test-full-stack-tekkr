@@ -38,12 +38,15 @@ export interface Deliverable {
 }
 
 export interface LLMProvider {
+   readonly name: string
    generateResponse(messages: LLMMessage[], model: string): Promise<string>
    generateTitle(content: string, model: string): Promise<string>
 }
 
+export type ProviderType = "gemini" | "openai" | "anthropic"
+
 export interface ModelInfo {
    id: string
    name: string
-   provider: "gemini"
+   provider: ProviderType
 }
