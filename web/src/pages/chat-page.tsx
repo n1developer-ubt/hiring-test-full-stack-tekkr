@@ -1,5 +1,6 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useEffect, useRef } from "react"
+import { toast } from "sonner"
 import { ChatInputBox } from "../components/chat-input-box"
 import { ModelSelector } from "../components/model-selector"
 import {
@@ -15,19 +16,42 @@ import {
 } from "../data/queries/chats"
 import { ScrollArea } from "../components/ui/scroll-area"
 import { Skeleton } from "../components/ui/skeleton"
+import { getErrorMessage } from "../lib/error-utils"
 
 export function ChatPage() {
    const { chatId } = useParams<{ chatId: string }>()
+   const navigate = useNavigate()
    const [selectedModel, setSelectedModel] = useSelectedModel()
    const messagesEndRef = useRef<HTMLDivElement>(null)
 
-   const { data: chat, isLoading: isChatLoading } = useChatQuery(chatId)
+   const {
+      data: chat,
+      isLoading: isChatLoading,
+      isError: isChatError,
+   } = useChatQuery(chatId)
    const { data: messages = [], isLoading: isMessagesLoading } =
       useMessagesQuery(chatId)
    const sendMessageMutation = useSendMessageMutation(chatId!)
 
+   // Redirect to home if chat doesn't exist
+   useEffect(() => {
+      if (isChatError) {
+         toast.error("Chat not found")
+         navigate("/")
+      }
+   }, [isChatError, navigate])
+
    const handleSend = (content: string) => {
-      sendMessageMutation.mutate({ content, model: selectedModel })
+      sendMessageMutation.mutate(
+         { content, model: selectedModel },
+         {
+            onError: (error) => {
+               toast.error("Failed to send message", {
+                  description: getErrorMessage(error),
+               })
+            },
+         }
+      )
    }
 
    useEffect(() => {
@@ -45,6 +69,10 @@ export function ChatPage() {
             </div>
          </div>
       )
+   }
+
+   if (isChatError || !chat) {
+      return null
    }
 
    return (

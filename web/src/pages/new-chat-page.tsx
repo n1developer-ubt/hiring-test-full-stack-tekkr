@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom"
 import { MessageSquarePlusIcon } from "lucide-react"
+import { toast } from "sonner"
 import { ChatInputBox } from "../components/chat-input-box"
 import { ModelSelector } from "../components/model-selector"
 import { useSelectedModel } from "../hooks/use-selected-model"
 import { useCreateChatMutation } from "../data/queries/chats"
+import { getErrorMessage } from "../lib/error-utils"
 
 export function NewChatPage() {
    const navigate = useNavigate()
@@ -16,6 +18,11 @@ export function NewChatPage() {
          {
             onSuccess: (data) => {
                navigate(`/chats/${data.chat.id}`)
+            },
+            onError: (error) => {
+               toast.error("Failed to create chat", {
+                  description: getErrorMessage(error),
+               })
             },
          }
       )
