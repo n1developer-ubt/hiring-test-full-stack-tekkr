@@ -8,16 +8,19 @@ export const availableModels: ModelInfo[] = [
       name: "Gemini 2.5 Flash",
       provider: "gemini",
    },
-   { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash", provider: "gemini" },
-   { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro", provider: "gemini" },
+   { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro", provider: "gemini" },
+   {
+      id: "gemini-2.5-flash-lite",
+      name: "Gemini 2.5 Flash Lite",
+      provider: "gemini",
+   },
 ]
 
 // Map frontend model IDs to actual Gemini API model names
 const modelApiNameMap: Record<string, string> = {
    "gemini-2.5-flash": "gemini-2.5-flash",
-   "gemini-2.0-flash": "gemini-2.0-flash",
-   "gemini-1.5-flash": "gemini-1.5-flash",
-   "gemini-1.5-pro": "gemini-1.5-pro",
+   "gemini-2.5-pro": "gemini-2.5-pro",
+   "gemini-2.5-flash-lite": "gemini-2.5-flash-lite",
 }
 
 // Cached Gemini provider instance
@@ -48,5 +51,5 @@ export function getAllowedModelIds(): string[] {
 
 // Map model ID to Gemini API model name
 export function mapModelName(model: string): string {
-   return modelApiNameMap[model] || "gemini-2.0-flash-lite"
+   return modelApiNameMap[model] || "gemini-2.5-flash-lite"
 }

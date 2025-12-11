@@ -1,35 +1,44 @@
-import React from 'react';
-import {Navbar} from "./components/navbar";
-import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
-import {HomePage} from "./pages/home-page";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import React from "react"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { ChatLayout } from "./pages/chat-layout"
+import { NewChatPage } from "./pages/new-chat-page"
+import { ChatPage } from "./pages/chat-page"
+
+const queryClient = new QueryClient({
+   defaultOptions: {
+      queries: {
+         staleTime: 1000 * 60,
+         refetchOnWindowFocus: false,
+      },
+   },
+})
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        element: (
-            <>
-                <Navbar />
-                <div className={"px-8 pt-4 pb-16"}>
-                    <Outlet />
-                </div>
-            </>
-        ),
-        children: [
-            {
-                path: "/",
-                element: <HomePage />,
-            },
-        ]
-    }
-]);
+   {
+      path: "/",
+      element: <ChatLayout />,
+      children: [
+         {
+            index: true,
+            element: <NewChatPage />,
+         },
+         {
+            path: "chats/:chatId",
+            element: <ChatPage />,
+         },
+      ],
+   },
+])
 
 function App() {
-    return <QueryClientProvider client={new QueryClient()}>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools />
-    </QueryClientProvider>
+   return (
+      <QueryClientProvider client={queryClient}>
+         <RouterProvider router={router} />
+         <ReactQueryDevtools />
+      </QueryClientProvider>
+   )
 }
 
-export default App;
+export default App
